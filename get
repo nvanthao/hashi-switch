@@ -1,0 +1,51 @@
+#!/bin/bash
+
+set -euo pipefail
+
+PRODUCT=${1:-}
+VERSION=${2:-}
+DIR=$HOME/.hashi-switch
+BIN_PATH=/usr/local/bin/$PRODUCT
+
+function download_url() {
+    local architecture=$(uname -m | sed 's/x86_64/amd64/')
+    if [[ "$(uname)" == "Darwin" ]]; then
+        local distribution="darwin"
+    elif [[ -e "/etc/os-release" ]]; then
+        local distribution="linux"
+    else
+        echo "Unsupported operating system"
+        exit 1
+    fi
+    echo "https://releases.hashicorp.com/$PRODUCT/$VERSION/$PRODUCT"_"$VERSION"_"$distribution"_"$architecture.zip"
+}
+
+function existing_binary() {
+    if [ -f "$DIR/$PRODUCT\_$VERSION" ]; then
+        echo "Binary already exists in $DIR, switching symlink to $BIN_PATH"
+        ln -sf "$DIR/$PRODUCT\_$VERSION" "$BIN_PATH"
+        exit 0
+    fi
+}
+
+function download_and_extract() {
+    local download_url=$(download_url)
+    if curl --output /dev/null --silent --head --fail "$download_url"; then
+        local download_dir="/tmp/hashi_switch_$(date +%s)"
+        mkdir -p "$download_dir"
+        echo "Downloading binary from $download_url"
+        curl -fSL -o "$download_dir/$PRODUCT.zip" "$download_url"
+        echo "Extracting binary to $DIR"
+        unzip -q -o "$download_dir/$PRODUCT.zip" -d "$DIR"
+        mv "$DIR/$PRODUCT" "$DIR/$PRODUCT\_$VERSION"
+        echo "Creating symlink to $BIN_PATH"
+        sudo ln -sf "$DIR/$PRODUCT\_$VERSION" "$BIN_PATH"
+        echo "Downloaded and switched to $PRODUCT $VERSION"
+    else
+        echo "Binary not found at $download_url"
+        exit 1
+    fi
+}
+
+existing_binary
+download_and_extract
