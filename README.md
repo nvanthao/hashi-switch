@@ -1,4 +1,4 @@
-# Hashi-Switch
+# hashi-switch
 This is an utility script that helps to download and switch to different HashiCorp product binary easily for development and testing purpose.
 
 ## Usage
@@ -19,8 +19,10 @@ chmod +x /usr/local/bin/hs
 For example
 
 ```
-
 hs consul 1.15.2
 hs consul-k8s 1.1.1
 hs nomad 1.5.3+ent
 ```
+
+## Notes
+This is only works with Linux and Darwin
