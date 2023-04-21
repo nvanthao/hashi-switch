@@ -23,7 +23,7 @@ function download_url() {
 function existing_binary() {
     if [ -f "$DIR/$PRODUCT\_$VERSION" ]; then
         echo "Binary already exists in $DIR, switching symlink to $BIN_PATH"
-        ln -sf "$DIR/$PRODUCT\_$VERSION" "$BIN_PATH"
+        sudo ln -sf "$DIR/$PRODUCT\_$VERSION" "$BIN_PATH"
         exit 0
     fi
 }

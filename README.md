@@ -6,7 +6,7 @@ This is an utility script that helps to download and switch to different HashiCo
 Execute the script and provide the `$PRODUCT` and `$VERSION`
 
 ```
-sudo ./main.sh consul 1.5.3+ent
+sudo ./get consul 1.15.2+ent
 ```
 
 Alternatively, for automation purpose
