@@ -28,7 +28,39 @@ function existing_binary() {
     fi
 }
 
+function get_latest_version() {
+    local version=$(curl -sL https://api.releases.hashicorp.com/v1/releases/$PRODUCT | jq -r .[0].version)
+    echo $version
+}
+
+function check_product_exists() {
+    if [[ -z "$PRODUCT" ]]; then
+        echo "No product specified"
+        exit 1
+    fi
+
+    local product_index=$(curl -sL https://api.releases.hashicorp.com/v1/products | jq ". | index(\"$PRODUCT\")")
+    if [[ "$product_index" == "null" ]]; then
+        echo "$PRODUCT is not a valid HashiCorp product"
+        exit 1
+    fi
+}
+
+function check_version_exists() {
+    if [[ -z "$VERSION" ]]; then
+        VERSION=$(get_latest_version)
+    fi
+
+    if [[ -z "$VERSION" ]]; then
+        echo "No version specified and no latest version found"
+        exit 1
+    fi
+}
+
 function download_and_extract() {
+    check_product_exists
+    check_version_exists
+
     local download_url=$(download_url)
     if curl --output /dev/null --silent --head --fail "$download_url"; then
         local download_dir="/tmp/hashi_switch_$(date +%s)"
