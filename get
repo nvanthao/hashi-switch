@@ -8,7 +8,7 @@ DIR=$HOME/.hashi-switch
 BIN_PATH=/usr/local/bin/$PRODUCT
 
 function download_url() {
-    local architecture=$(uname -m | sed 's/x86_64/amd64/')
+    local architecture=$(uname -m | sed 's/x86_64/amd64/' | sed 's/aarch64/arm64/')
     if [[ "$(uname)" == "Darwin" ]]; then
         local distribution="darwin"
     elif [[ -e "/etc/os-release" ]]; then
