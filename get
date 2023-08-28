@@ -29,7 +29,7 @@ function existing_binary() {
 }
 
 function get_latest_version() {
-    local version=$(curl -sL https://api.releases.hashicorp.com/v1/releases/$PRODUCT | jq -r .[0].version)
+    local version=$(curl -sL https://api.releases.hashicorp.com/v1/releases/$PRODUCT/latest | jq -r .version)
     echo $version
 }
 
